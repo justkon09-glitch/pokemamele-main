@@ -51,16 +51,26 @@ export class PokemonService {
   return this.repo.save(item);
 }
 
- findAll() { 
-  return this.repo.find(); 
- }
-
- async findOne(id:number) {
-   const item=await this.repo.findOne({where:{id} as any}); 
-   if(!item) throw new NotFoundException('Registro no encontrado'); 
-   return item; 
+findAll() { 
+   return this.repo.find({
+     relations: {
+       tipoPrimario: true,
+       tipoSecundario: true,
+     }, 
+   }); 
   }
 
+  async findOne(id: number) {
+   const item = await this.repo.findOne({
+     where: { id } as any,
+     relations: {
+       tipoPrimario: true,
+       tipoSecundario: true,
+     },
+   }); 
+   if (!item) throw new NotFoundException('Registro no encontrado'); 
+   return item; 
+  }
  async update(id: number, data: Partial<Pokemon>) {
 
   const item = await this.findOne(id);
